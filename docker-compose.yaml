@@ -5,7 +5,7 @@ volumes:
 
 services:
   rpc:
-    container_name: shipments
+    container_name: notifications
     build: .
     ports:
       - "8080:8090"
