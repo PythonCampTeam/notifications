@@ -8,7 +8,7 @@ services:
     container_name: notifications
     build: .
     ports:
-      - "8080:8090"
+      - "8020:8030"
     networks:
       - gateway_backend
     external_links:

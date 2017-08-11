@@ -1,8 +1,9 @@
+# using SendGrid's Python Library
+# https://github.com/sendgrid/sendgrid-python
 import sendgrid
 import os
 from sendgrid.helpers.mail import *
 
-#sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('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'))
 sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
 from_email = Email("test@example.com")
 to_email = Email("test@example.com")
