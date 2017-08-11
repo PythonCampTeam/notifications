@@ -1,16 +1,73 @@
-# using SendGrid's Python Library
-# https://github.com/sendgrid/sendgrid-python
+from nameko.rpc import rpc
 import sendgrid
 import os
-from sendgrid.helpers.mail import *
+from sendgrid.helpers.mail import Mail, Email, Content
+import urllib.request as urllib
+from twilio.rest import Client
+from datetime import datetime
+import json
+from nameko.events import EventDispatcher, event_handler
 
-sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
-from_email = Email("test@example.com")
-to_email = Email("test@example.com")
-subject = "Sending with SendGrid is Fun"
-content = Content("text/plain", "and easy to do anywhere, even with Python")
-mail = Mail(from_email, subject, to_email, content)
-response = sg.client.mail.send.post(request_body=mail.get())
-print(response.status_code)
-print(response.body)
-print(response.headers)
+
+class Notifications(object):
+    """his class make Notifications request to add cost to trash
+    Args:
+        name(str): The name  tovar
+        aditional(dict): information about tovar
+    Return:
+        cost(int): PPPPPP
+        """
+    name = 'NotificationsRPC'
+    SENDGRID_API_KEY = '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'
+
+    sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+
+    @rpc
+    def testing(self, **kwargs):
+        doc_class = self.__dict__
+        return {self.__class__.__name__: doc_class,
+                'docs': self.__class__.__doc__}
+
+    @rpc
+    def send_email(self, to_email):
+        from_email = Email("test@example.com")
+        #to_email = Email("test@example.com")
+        to_email = Email(to_email)
+        subject = "Notifications about Order"
+        content = Content("text/plain", "and easy to do anywhere, even with Python")
+        mail = Mail(from_email, subject, to_email, content)
+        response = Notifications.sg.client.mail.send.post(request_body=mail.get())
+        return response
+
+    @rpc
+    def send_sms(self, number):
+        accaunt_sid = 'AC3adbfe0e72f9d7dc7197fefd2cab7aca'
+        auth_token = 'f3ab11d8839c7752d07db9854b93bc8f'
+        client = Client(accaunt_sid, auth_token)
+        client.messages.create(
+                to='+77017335394',
+                from_='+16195866444',
+                body='Na potolke nosok!'
+                )
+        return 'send sms'
+
+    @rpc
+    def send_email2(self, to_email, from_email, subject, body_html, body_text):
+
+        message = sendgrid.Mail(to=to_email, subject=subject, html=body_html,
+                                text=body_text, from_email=from_email)
+        print("SENDGRID: send_email: Attempting to send email to {to_email} from {from_email} with subject {subject} at time {time}".format(
+            to_email=to_email,
+            from_email=from_email,
+            subject=subject,
+            time=datetime.now(),
+            ))
+
+        status, msg = Notifications.sq.client.send(message)
+        response = Notifications.sg.client.mail.send.post(message)
+        print("SENDGRID: send_email: Received response from Sendgrid at time {time} with status {status} and response {msg}".format(
+            time=datetime.now(),
+            status=status,
+            msg=msg,
+            ))
+        return response
