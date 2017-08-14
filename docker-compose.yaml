@@ -1,0 +1,25 @@
+version: "2"
+
+volumes:
+  ipython_history: {}
+
+services:
+  rpc:
+    container_name: notifications
+    build: .
+    ports:
+      - "8020:8030"
+    networks:
+      - gateway_backend
+    external_links:
+      - rabbit-day7:rabbit
+    environment:
+        - RABBIT_PASSWORD=guest
+        - RABBIT_USER=guest
+        - RABBIT_HOST=rabbit
+        - RABBIT_PORT=5672
+        - RABBIT_MANAGEMENT_PORT=15672
+        - SETTINGS_MODULE=service.config.settings.common
+networks:
+  gateway_backend:
+    external: true
