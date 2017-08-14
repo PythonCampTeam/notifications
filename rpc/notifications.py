@@ -4,23 +4,18 @@ from sendgrid.helpers.mail import Mail, Email, Content
 # import urllib.request as urllib
 from twilio.rest import Client
 # from datetime import datetime
-from keys import SENDGRID_API_KEY
+#from keys import SENDGRID_API_KEY
 # import json
 # from nameko.events import EventDispatcher, event_handler
 # from config.settings.common import security
 
 
 class Notifications(object):
-    """his class make Notifications request to add cost to trash
-    Args:
-        name(str):
-        aditional(dict): information about tovar
-    Return:
-        response
+    """This class make Notifications request
         """
     name = 'NotificationsRPC'
 
-    sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+    #sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
     # def __init__(self):
     #     self.sendgrid_key = SENDGRID_API_KEY
@@ -35,30 +30,40 @@ class Notifications(object):
 
     @rpc
     def send_email(self, to_email='test@example.com'):
+        """This method send email to customer
+        Args:
+            to_email (str) : email of customer
+        """
+        SENDGRID_API_KEY = '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'
         sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
         from_email = Email("test@example.com")
         #to_email = Email("test@example.com")
         to_email = Email(to_email)
         subject = "Notifications about Order"
-        content = Content("text/plain", "and easy to do anywhere, even with Python")
+        content = Content("text/plain", "Orders")
         mail = Mail(from_email, subject, to_email, content)
-        response = sg.client.mail.send.post(request_body=mail.get())
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-        return response
+        #response = sg.client.mail.send.post(request_body=mail.get())
+        sg.client.mail.send.post(request_body=mail.get())
+        # print(response.status_code)
+        # print(response.body)
+        # print(response.headers)
+        return "Messages send"
 
     @rpc
     def send_sms(self, number):
+        """This method send sms to customer
+        Args:
+            number (str) : number of customer
+        """
         accaunt_sid = 'AC3adbfe0e72f9d7dc7197fefd2cab7aca'
         auth_token = 'f3ab11d8839c7752d07db9854b93bc8f'
         client = Client(accaunt_sid, auth_token)
-        response = client.messages.create(
+        client.messages.create(
                 to=number,
                 from_='+16195866444',
                 body='Na potolke nosok!'
                 )
-        return response
+        return 'message send'
 
     # @rpc
     # def send_email2(self, to_email, from_email, subject, body_html, body_text):
