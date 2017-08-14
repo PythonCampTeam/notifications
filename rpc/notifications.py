@@ -1,30 +1,31 @@
 from nameko.rpc import rpc
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, Content
-import urllib.request as urllib
+# import urllib.request as urllib
 from twilio.rest import Client
-from datetime import datetime
+# from datetime import datetime
 from keys import SENDGRID_API_KEY
-import json
-from nameko.events import EventDispatcher, event_handler
-#from config.settings.common.security import accaunt_sid, auth_token
+# import json
+# from nameko.events import EventDispatcher, event_handler
+# from config.settings.common import security
 
 
 class Notifications(object):
     """his class make Notifications request to add cost to trash
     Args:
-        name(str): The name  tovar
+        name(str):
         aditional(dict): information about tovar
     Return:
-        cost(int): PPPPPP
+        response
         """
     name = 'NotificationsRPC'
+
     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
-    def __init__(self):
-        self.sendgrid_key = SENDGRID_API_KEY
-        #self.sendgrid_v2_client = sendgrid.SendGridAPIClient(self.sendgrid_key)
-        self.sendgrid_v3_client = sendgrid.SendGridAPIClient(apikey=self.sendgrid_key)
+    # def __init__(self):
+    #     self.sendgrid_key = SENDGRID_API_KEY
+    #     #self.sendgrid_v2_client = sendgrid.SendGridAPIClient(self.sendgrid_key)
+    #     self.sendgrid_v3_client = sendgrid.SendGridAPIClient(apikey=self.sendgrid_key)
 
     @rpc
     def testing(self, **kwargs):
@@ -34,6 +35,7 @@ class Notifications(object):
 
     @rpc
     def send_email(self, to_email='test@example.com'):
+        SENDGRID_API_KEY = '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'
         sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
         from_email = Email("test@example.com")
         #to_email = Email("test@example.com")
@@ -59,22 +61,24 @@ class Notifications(object):
                 )
         return response
 
-    @rpc
-    def send_email2(self, to_email, from_email, subject, body_html, body_text):
-
-        message = sendgrid.Mail(to=to_email, subject=subject, html=body_html,
-                                text=body_text, from_email=from_email)
-        print("SENDGRID: send_email: Attempting to send email to {to_email} from {from_email} with subject {subject} at time {time}".format(
-            to_email=to_email,
-            from_email=from_email,
-            subject=subject,
-            time=datetime.now(),
-            ))
-        status, msg = self.sendgrid_v3_client.send(message)
-        response = Notifications.sg.client.mail.send.post(message)
-        print("SENDGRID: send_email: Received response from Sendgrid at time {time} with status {status} and response {msg}".format(
-            time=datetime.now(),
-            status=status,
-            msg=msg,
-            ))
-        return response
+    # @rpc
+    # def send_email2(self, to_email, from_email, subject, body_html, body_text):
+    #
+    #     message = sendgrid.Mail(to=to_email, subject=subject, html=body_html,
+    #                             text=body_text, from_email=from_email)
+    #     print("SENDGRID: send_email: Attempting to send email to {to_email} from {from_email}
+    #     with subject {subject} at time {time}".format(
+    #         to_email=to_email,
+    #         from_email=from_email,
+    #         subject=subject,
+    #         time=datetime.now(),
+    #         ))
+    #     status, msg = self.sendgrid_v3_client.send(message)
+    #     response = Notifications.sg.client.mail.send.post(message)
+    #     print("SENDGRID: send_email: Received response from Sendgrid at time {time} with status {status}
+    #      and response {msg}".format(
+    #         time=datetime.now(),
+    #         status=status,
+    #         msg=msg,
+    #         ))
+    #     return response
