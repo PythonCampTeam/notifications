@@ -5,8 +5,10 @@ from sendgrid.helpers.mail import Mail, Email, Content
 import urllib.request as urllib
 from twilio.rest import Client
 from datetime import datetime
+from keys import SENDGRID_API_KEY
 import json
 from nameko.events import EventDispatcher, event_handler
+from keys import accaunt_sid, auth_token
 
 
 class Notifications(object):
@@ -18,8 +20,6 @@ class Notifications(object):
         cost(int): PPPPPP
         """
     name = 'NotificationsRPC'
-    SENDGRID_API_KEY = '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'
-
     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
     @rpc
@@ -41,8 +41,6 @@ class Notifications(object):
 
     @rpc
     def send_sms(self, number):
-        accaunt_sid = 'AC3adbfe0e72f9d7dc7197fefd2cab7aca'
-        auth_token = 'f3ab11d8839c7752d07db9854b93bc8f'
         client = Client(accaunt_sid, auth_token)
         client.messages.create(
                 to='+77017335394',
