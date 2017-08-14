@@ -35,7 +35,6 @@ class Notifications(object):
 
     @rpc
     def send_email(self, to_email='test@example.com'):
-        SENDGRID_API_KEY = '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'
         sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
         from_email = Email("test@example.com")
         #to_email = Email("test@example.com")
