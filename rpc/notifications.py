@@ -4,6 +4,7 @@ from sendgrid.helpers.mail import Mail, Email, Content
 # import urllib.request as urllib
 from twilio.rest import Client
 from nameko.timer import timer
+import json
 # from datetime import datetime
 # from keys import SENDGRID_API_KEY
 # import json
@@ -41,11 +42,11 @@ class Notifications(object):
         mail = Mail(from_email, subject, to_email, content)
         content = Content(content)
         # response = sg.client.mail.send.post(request_body=mail.get())
-        sg.client.mail.send.post(request_body=mail.get())
+        response = sg.client.mail.send.post(request_body=mail.get())
         # print(response.status_code)
         # print(response.body)
         # print(response.headers)
-        return "Messages send"
+        return response.body
 
     @rpc
     #@timer(interval=2)
@@ -66,3 +67,5 @@ class Notifications(object):
                 body=content
         )
         #return(message.error_code, message.error_message)
+        #return json.dumps(message.body.encode('utf-8'))
+        return message.error_code
