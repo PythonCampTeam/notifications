@@ -10,4 +10,4 @@ done
 
 # Run the service
 
-nameko run --config /service/config/config.yml rpc.shipping
+nameko run --config /notifications/config/config.yml rpc.notifications
