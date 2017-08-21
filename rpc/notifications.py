@@ -37,7 +37,7 @@ class Notifications(object):
         content = Content("text/plain", "and easy to do anywhere, even with Python")
         mail = Mail(from_email, subject, to_email, content)
         response = Notifications.sg.client.mail.send.post(request_body=mail.get())
-        return response
+        return "Send it!"
 
     @rpc
     def send_sms(self, number):
