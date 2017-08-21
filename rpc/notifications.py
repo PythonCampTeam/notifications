@@ -12,6 +12,7 @@ class Notifications(object):
     with use twillo and sendgrid.
         """
     name = 'NotificationsRPC'
+    content = "text/html", "<html><body>some text here</body></html>"
 
     mail_db = db.StoreDB(data_stored='address_to', data_key='object_id')
     sms_db = db.StoreDB(data_stored='phone_to', data_key='object_id')
@@ -23,23 +24,26 @@ class Notifications(object):
                 'docs': self.__class__.__doc__}
 
     @rpc
-    def send_email(self, to_email, subject, content,
-                   from_email='tamara.malysheva@saritasa.com'):
+    def send_email(self, subject, body,
+                   from_email='tamara.malysheva@saritasa.com',
+                   to_email='tamara.malysheva@saritasa.com'):
         """This method send email to customer with use SenfGrid
         Args:
             to_emails (str) : email of customer
             from_emails(str): email of shop
             subject (str): subject of mail
-            content(str): content of the mail
+            body(str): content of the mail
         Return:
             response.code (str): return 202 if email sended
         """
-        SENDGRID_API_KEY =''
-        sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+        sengrid_key = ''.join(security_settings.SENDGRID_API_KEY)
+        sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
         from_email = Email(from_email)
         to_email = Email(to_email)
+        content = Content(security_settings.body_type,
+                          security_settings.body_mail.format(body))
         mail = Mail(from_email, subject, to_email, content)
-        content = Content(content)
+        mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
         response = sg.client.mail.send.post(request_body=mail.get())
         self.mail_db.add(to_email)
         return response.status_code
@@ -54,13 +58,13 @@ class Notifications(object):
         Return:
             message.code_error(str): return null if sms send correct
         """
-
+#ngrok
         client = Client(security_settings.accaunt_sid,
                         security_settings.auth_token)
         message = client.messages.create(
                 to=to_phone,
                 from_=security_settings.twilio_number,
                 body=content
-        )
+                )
         self.sms_db.add(to_phone)
         return message.error_code
