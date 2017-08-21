@@ -25,7 +25,7 @@ class Notifications(object):
 
     @rpc
     def send_email(self, subject, body,
-                   from_email='tamara.malysheva@saritasa.com',
+                   from_email='test@example.com',
                    to_email='tamara.malysheva@saritasa.com'):
         """This method send email to customer with use SenfGrid
         Args:
@@ -45,7 +45,7 @@ class Notifications(object):
         mail = Mail(from_email, subject, to_email, content)
         mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
         response = sg.client.mail.send.post(request_body=mail.get())
-        self.mail_db.add(to_email)
+        #self.mail_db.add(to_email)
         return response.status_code
 
     @rpc
@@ -66,5 +66,5 @@ class Notifications(object):
                 from_=security_settings.twilio_number,
                 body=content
                 )
-        self.sms_db.add(to_phone)
+        #self.sms_db.add(to_phone)
         return message.error_code
