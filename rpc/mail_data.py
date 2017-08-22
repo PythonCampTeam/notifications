@@ -14,6 +14,21 @@ schema_body = {'to_email': {'type': 'string'},
                'content': {'type': 'string'}}
 
 
+
+# body = {
+# "to_email": "tamara.malysheva@saritasa.com",
+# "from_email": "test@example.com",
+# "subject" : "blabla",
+# "content" : "content"
+# }
+# {
+# "to_email": 123123,
+# "from_email": "test@example.com",
+# "subject" : "blabla",
+# "content" : "content"
+# }
+
+
 # SENDGRID_API_KEY = ''
 # sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 # from_email = Email("test@example.com")
