@@ -6,6 +6,7 @@ from rpc import mail_data
 from rpc import sms
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
+from db.database import StoreDB
 
 
 Validator = cerberus.Validator
@@ -17,7 +18,8 @@ class Notifications(object):
     with use twillo and sendgrid.
 
     """
-
+    mail_db = StoreDB()
+    sms_db = StoreDB()
     name = 'NotificationsRPC'
 
     @rpc
@@ -51,6 +53,7 @@ class Notifications(object):
         mail = Mail(from_email, subject, to_email, content)
         mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
         response = sg.client.mail.send.post(request_body=mail.get())
+        self.mail_db.add_mail(to_email, response.headers)
         return response.status_code
 
     @rpc

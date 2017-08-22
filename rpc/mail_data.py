@@ -25,7 +25,7 @@ schema_body = {'to_email': {'type': 'string'},
 # print(response.status_code)
 # #print(response.body)
 # #print(response.headers)
-#
+# 
 #
 # def send_templated_email(template_id='3e593b00-d9c9-447a-a0d6-561b65ea0cbb',
 #                          to_email="tamara.malysheva@saritasa.com",
@@ -33,7 +33,7 @@ schema_body = {'to_email': {'type': 'string'},
 #                          subject="Sending mail",
 #                          body='blablabla'
 #                          ):
-#
+#     SENDGRID_API_KEY = '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'
 #     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 #     from_email = Email(from_email)
 #     to_email = Email(to_email)
@@ -44,7 +44,7 @@ schema_body = {'to_email': {'type': 'string'},
 #     mail.template_id = template_id
 #     response = sg.client.mail.send.post(request_body=mail.get())
 #     print(response.status_code)
-#     print(response.body)
+#     #print(response.body)
 #     print(response.headers)
 #     #mail.template_id = '3e593b00-d9c9-447a-a0d6-561b65ea0cbb'
 #
