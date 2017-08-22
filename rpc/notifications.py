@@ -2,8 +2,8 @@ from nameko.rpc import rpc
 import cerberus
 import sendgrid
 from config.settings.common import security as security_settings
-from rpc.mail import body_type, body_mail, schema_body
-from rpc.sms import schema_sms
+from rpc import mail_data
+from rpc import sms
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
 
@@ -37,7 +37,7 @@ class Notifications(object):
         sengrid_key = ''.join(security_settings.SENDGRID_API_KEY)
         sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
 
-        if not v.validate(data, schema_body):
+        if not v.validate(data, mail_data.schema_body):
             return False
         to_email = data.get("to_email", 'tamara.malysheva@saritasa.com')
         from_email = data.get("from_email", 'test@example.com')
@@ -46,7 +46,8 @@ class Notifications(object):
 
         from_email = Email(from_email)
         to_email = Email(to_email)
-        content = Content(body_type, body_mail.format(body))
+        content = Content(mail_data.body_type,
+                          mail_data.body_mail.format(body))
         mail = Mail(from_email, subject, to_email, content)
         mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
         response = sg.client.mail.send.post(request_body=mail.get())
@@ -69,7 +70,7 @@ class Notifications(object):
                         security_settings.auth_token)
         to_phone = body.get("to_phone", '+79994413746')
         content = body.get("content", 'Your Order ready')
-        if not v.validate(body, schema_sms):
+        if not v.validate(body, sms.schema_sms):
             return False
         message = client.messages.create(
                 to=to_phone,
