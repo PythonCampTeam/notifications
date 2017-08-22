@@ -80,4 +80,5 @@ class Notifications(object):
                 from_=security_settings.twilio_number,
                 body=content
                 )
+
         return message.error_code

@@ -25,7 +25,7 @@ schema_body = {'to_email': {'type': 'string'},
 # print(response.status_code)
 # #print(response.body)
 # #print(response.headers)
-# 
+#
 #
 # def send_templated_email(template_id='3e593b00-d9c9-447a-a0d6-561b65ea0cbb',
 #                          to_email="tamara.malysheva@saritasa.com",
