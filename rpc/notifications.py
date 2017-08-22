@@ -7,6 +7,7 @@ from rpc import sms
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
 from db.database import StoreDB
+import twilio
 
 
 Validator = cerberus.Validator
@@ -57,28 +58,33 @@ class Notifications(object):
         return response.status_code
 
     @rpc
+    @rpc
     def send_sms(self, body):
         """This method send sms to customer
-
         Args:
             to_phone (str) : number of customer
             body (str): message to customer
             from(str): number of salary (one number in free twillo accaunt)
-
         Return:
             message.code_error(str): return null if sms send correct
-
         """
         client = Client(security_settings.accaunt_sid,
                         security_settings.auth_token)
+        if not v.validate(body, sms.schema_sms):
+            return {"errors": v.errors}
         to_phone = body.get("to_phone", '+79994413746')
         content = body.get("content", 'Your Order ready')
-        if not v.validate(body, sms.schema_sms):
-            return False
-        message = client.messages.create(
-                to=to_phone,
-                from_=security_settings.twilio_number,
-                body=content
-                )
-
-        return message.error_code
+        try:
+            message = client.messages.create(
+                    to=to_phone,
+                    from_=security_settings.twilio_number,
+                    body=content
+                    )
+        except twilio.base.exceptions.TwilioRestException as e:
+            return {
+                    "code": "HTTP 400 error",
+                    "message":
+                    """Unable to create record: The To number is not a valid
+                       phone number"""}
+        self.sms_db.add_sms(to_phone, message.sid, message.status)
+        return {"error_code": message.error_code, "status": message.status}

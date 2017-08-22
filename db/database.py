@@ -16,31 +16,25 @@ class StoreDB(object):
         self.db_mail = []
         self.db_sms = []
 
-    def add_mail(self, mail, date):
+    def add_mail(self, mail, data):
         """Adde new information about email
         Args:
             email(str): email of customer
             date(str): information about sms notification
 
         """
-        self.element = {"email": mail, "date": date}
+        self.element = {"email": mail, "date": data}
         self.db_mail.append(self.element)
 
-    def add_sms(self, number, date):
+    def add_sms(self, number, sid, status):
         """Adde new information about sms
         Args:
             number(str): number of customer
             date(str): information about sms notification
 
         """
-        self.element = {"number": number, "date": date}
+        self.element = {"number": number, "sid": sid,  "status": status}
         self.db_sms.append(self.element)
-
-    def delete(self, **kwargs):
-        object_id = kwargs.get(self.data_key)
-        if any(object_id in _ for _ in self.db):
-            del self.db[object_id]
-        return self.db
 
     def get_item(self):
         return self.db.element
