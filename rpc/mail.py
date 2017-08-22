@@ -1,12 +1,27 @@
-import json
+import cerberus
+
+
 import sendgrid
-import os
-from datetime import datetime
+from sendgrid.helpers.mail import (ASM, Category, Content, CustomArg, Email,
+                                   Header, Mail, Section)
 
-import urllib2
+body_type = "text/html"
+body_mail = "<html><body>{}</body></html>"
+
+schema_body = {'to_email': {'type': 'string'},
+               'from_email': {'type': 'string'},
+               'subject': {'type': 'string'},
+               'content': {'type': 'string'}}
 
 
-from sendgrid.helpers.mail import Mail, Email, Content, Section, Header, Category, CustomArg, ASM
+
+
+
+
+
+
+
+
 
 
 SENDGRID_API_KEY = ''
@@ -77,7 +92,7 @@ def build_kitchen_sink():
 
 
 def send_kitchen_sink():
-    
+
     # Assumes you set your environment variable:
     # https://github.com/sendgrid/sendgrid-python/blob/master/TROUBLESHOOTING.md#environment-variables-and-your-sendgrid-api-key
     sg = sendgrid.SendGridAPIClient()

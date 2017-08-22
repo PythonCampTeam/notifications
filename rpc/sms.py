@@ -1,7 +1,10 @@
-from twilio.rest import Client
 from nameko.rpc import rpc
-from keys import accaunt_sid, auth_token
 
+from keys import accaunt_sid, auth_token
+from twilio.rest import Client
+
+schema_sms = {"to_phone": {'type': 'string'},
+              "content": {'type': 'string'}}
 
 @rpc
 def buy():
