@@ -91,3 +91,10 @@ schema_body = {'to_email': {'type': 'string'},
 #     print(response.status_code)
 #     print(response.headers)
 #     print(response.body)
+
+body = {
+"to_email": "tamara.malysheva@saritasa.com",
+"from_email": "test@example.com",
+"subject" : "blabla",
+"content" : "content"
+}

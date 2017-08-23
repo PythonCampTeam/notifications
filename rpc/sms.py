@@ -16,3 +16,8 @@ def buy():
         from_='+16195866444',
         body='Na potolke nosok!'
         )
+
+{
+    "to_phone": "+79994413746",
+    "content": "OK"
+}
