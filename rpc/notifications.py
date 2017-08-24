@@ -8,6 +8,7 @@ from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
 from db.database import StoreDB
 import twilio
+import python_http_client
 
 
 Validator = cerberus.Validator
@@ -22,6 +23,8 @@ class Notifications(object):
     mail_db = StoreDB()
     sms_db = StoreDB()
     name = 'NotificationsRPC'
+    sengrid_key = ''.join(security_settings.SENDGRID_API_KEY)
+    sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
 
     @rpc
     def send_email(self, data):
@@ -37,25 +40,26 @@ class Notifications(object):
             response.code (str): return 202 if email sended
 
         """
-        sengrid_key = ''.join(security_settings.SENDGRID_API_KEY)
-        sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
-
         if not v.validate(data, mail_data.schema_body):
             return False
-        to_email = data.get("to_email")
-        from_email = data.get("from_email", 'test@example.com')
-        subject = data.get("subject", "Order paid")
-        body = data.get("content", "You order paid and send")
+        try:
+            to_email = data.get("to_email", 'tamara.malysheva@saritasa.com')
+            from_email = data.get("from_email", 'test@example.com')
+            subject = data.get("subject")
+            body = data.get("content")
 
-        from_email = Email(from_email)
-        to_email = Email(to_email)
-        content = Content(mail_data.body_type,
-                          mail_data.body_mail.format(body))
-        mail = Mail(from_email, subject, to_email, content)
-        mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
-        response = sg.client.mail.send.post(request_body=mail.get())
+            from_email = Email(from_email)
+            to_email = Email(to_email)
+            content = Content(mail_data.body_type,
+                              mail_data.body_mail.format(body))
+            mail = Mail(from_email, subject, to_email, content)
+            mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
+            response = self.sg.client.mail.send.post(request_body=mail.get())
+        except python_http_client.exceptions.BadRequestsError as e:
+            return {" HTTP 400:BadRequestsError": e.to_dict}
+
         self.mail_db.add_mail(to_email, response.headers)
-        return response.status_code
+        return {"status code": response.status_code}
 
     @rpc
     @rpc
