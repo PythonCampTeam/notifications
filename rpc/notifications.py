@@ -46,12 +46,14 @@ class Notifications(object):
             to_email = data.get("to_email")
             from_email = data.get("from_email", 'test@example.com')
             subject = data.get("subject")
-            body = data.get("content")
-
+            name = data.get("name")
+            #order_id = data.get("order_id")
+            label = data.get("label")
             from_email = Email(from_email)
             to_email = Email(to_email)
             content = Content(mail_data.body_type,
-                              mail_data.body_mail.format(body))
+                              mail_data.body_mail.format(name,
+                                                         label))
             mail = Mail(from_email, subject, to_email, content)
             mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
             response = self.sg.client.mail.send.post(request_body=mail.get())
