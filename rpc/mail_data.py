@@ -8,7 +8,8 @@
 body_type = "text/html"
 body_mail = "<html><body>{}</body></html>"
 
-schema_body = {'to_email': {'type': 'string'},
+schema_body = {'to_email': {'type': 'string', 'empty': False,
+               'required': True},
                'from_email': {'type': 'string'},
                'subject': {'type': 'string'},
                'content': {'type': 'string'}}
