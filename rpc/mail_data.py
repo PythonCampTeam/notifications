@@ -1,9 +1,8 @@
 # import cerberus
+import base64
 #
-#
-# import sendgrid
-# from sendgrid.helpers.mail import (ASM, Category, Content, CustomArg, Email,
-#                                    Header, Mail, Section)
+import sendgrid
+from sendgrid.helpers.mail import Content, Email,  Mail,  Attachment
 
 body_type = "text/html"
 body_mail = "<html><body>{}</body></html>"
@@ -92,9 +91,39 @@ schema_body = {'to_email': {'type': 'string'},
 #     print(response.headers)
 #     print(response.body)
 
-body = {
-"to_email": "tamara.malysheva@saritasa.com",
-"from_email": "test@example.com",
-"subject" : "blabla",
-"content" : "content"
-}
+# body = {
+# "to_email": "tamara.malysheva@saritasa.com",
+# "from_email": "test@example.com",
+# "subject" : "blabla",
+# "content" : "content"
+# }
+SENDGRID_API_KEY = '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'
+sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+
+from_email = Email("from@example.com")
+subject = "subject"
+to_email = Email("tamara.malysheva@saritasa.com")
+content = Content("text/html", "<html><body>blabla</body></html>")
+
+#pdf = open("/home/developer/test.pdf", "rb").read()
+with open("/home/developer/test.pdf", 'rb') as f:
+    pdf = f.read()
+    f.close()
+encoded = base64.b64encode(pdf).decode()
+attachment = Attachment()
+attachment.content = encoded
+attachment.type = "application/pdf"
+attachment.filename = "test.pdf"
+attachment.disposition = "attachment"
+attachment.content_id = '1236'
+
+mail = Mail(from_email, subject, to_email, content)
+mail.template_id = '3e593b00-d9c9-447a-a0d6-561b65ea0cbb'
+
+mail.add_attachment(attachment)
+
+response = sg.client.mail.send.post(request_body=mail.get())
+
+print(response.status_code)
+print(response.body)
+print(response.headers)
