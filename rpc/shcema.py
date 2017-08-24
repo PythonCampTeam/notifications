@@ -1,8 +1,3 @@
-import base64
-#
-import sendgrid
-from sendgrid.helpers.mail import Content, Email,  Mail,  Attachment
-
 body_type = "text/html"
 body_mail = "<html><body>Hello, {}!. Your order is ready. See your label <a href={}</a></body></html>"
 

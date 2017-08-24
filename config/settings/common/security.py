@@ -5,13 +5,11 @@ accaunt_sid = 'AC3adbfe0e72f9d7dc7197fefd2cab7aca'
 auth_token = 'f3ab11d8839c7752d07db9854b93bc8f'
 twilio_number = '+16195866444'
 TEMPLATE_ID = {'PythonCamp': '3e593b00-d9c9-447a-a0d6-561b65ea0cbb'}
-SENDGRID_API_KEY = ['S', 'G', '.', 'b', 't', 'P', 'e', 'M', '1', 'y',
-                    'j', 'T', 'T',
-                    '2', 'v', 'm', 'e', 'P', 'B', '0', 'V', 'V',
-                    'e', '5', 'g', '.', 'M', 'B', 'J', 'J', 'U', '4',
-                    'u', 'U', 'k', 'K', '_', '7', 'q', 'l', 'E', 'p', '7',
-                    'Y', 'N', 'S', '1', '1', '5', 'd', 'o', 'T',
-                    'H', '9', 'e', 'E', 'P', 'D', 'I', 'A',
-                    'n', 'y', 'D', 'i', '_', '3', 'h', 'W', 'c']
+SENDGRID_API_KEY = ['S', 'G', '.', '7', 't', 'T', 'u', '7', 'e', 'C', '5', 'Q',
+                    'q', 'C', 'M', 'Q', '6', '8', '3', 's', 'n', 't', 'B', 'h',
+                    'A', '.', 'X', 'H', 'U', 's', 'W', '1', 'B', 's', 'K', 'G',
+                    '9', 'A', '9', 'Y', 'q', 'l', 'P', 'Z', 'r', 't', 'Y', 'q', 'c',
+                     'A', 'f', 'Y', '9', 'Y', '2', 'u', 'u', 'T', 'F', 'c', 'd', 'U',
+                     'C', 'd', 'a', '-', 'N', 'S', 'Q']
 body_type = "text/html"
 body_mail = "<html><body>{}</body></html>"

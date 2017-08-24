@@ -2,8 +2,7 @@ from nameko.rpc import rpc
 import cerberus
 import sendgrid
 from config.settings.common import security as security_settings
-from rpc import mail_data
-from rpc import sms
+from rpc import shcema
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
 from db.database import StoreDB
@@ -40,7 +39,7 @@ class Notifications(object):
             response.code (str): return 202 if email sended
 
         """
-        if not v.validate(data, mail_data.schema_body):
+        if not v.validate(data, shcema.schema_body):
             return False
         try:
             to_email = data.get("to_email")
@@ -51,9 +50,8 @@ class Notifications(object):
             label = data.get("label")
             from_email = Email(from_email)
             to_email = Email(to_email)
-            content = Content(mail_data.body_type,
-                              mail_data.body_mail.format(name,
-                                                         label))
+            content = Content(shcema.body_type,
+                              shcema.body_mail.format(name, label))
             mail = Mail(from_email, subject, to_email, content)
             mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
             response = self.sg.client.mail.send.post(request_body=mail.get())
@@ -76,7 +74,7 @@ class Notifications(object):
         """
         client = Client(security_settings.accaunt_sid,
                         security_settings.auth_token)
-        if not v.validate(body, sms.schema_sms):
+        if not v.validate(body, shcema.schema_sms):
             return {"errors": v.errors}
         to_phone = body.get("to_phone", '+79994413746')
         content = body.get("content", 'Your Order ready')
