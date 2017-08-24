@@ -43,7 +43,7 @@ class Notifications(object):
         if not v.validate(data, mail_data.schema_body):
             return False
         try:
-            to_email = data.get("to_email", 'tamara.malysheva@saritasa.com')
+            to_email = data.get("to_email")
             from_email = data.get("from_email", 'test@example.com')
             subject = data.get("subject")
             body = data.get("content")
