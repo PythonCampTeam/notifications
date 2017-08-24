@@ -3,3 +3,7 @@ rpc/keys.py
 rpc/mail.py
 rpc/sms.py
 rpc/__pycache__/*
+.idea
+__pycache__/
+*.pyc
+
