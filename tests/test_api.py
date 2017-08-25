@@ -1,12 +1,10 @@
 import unittest
+import sendgrid
 from unittest import TestCase
-from nameko.rpc import rpc, RpcProxy
 from unittest.mock import MagicMock, patch
-#from notifications import Notifications
-import rpc.notifications
 from nameko.testing.services import worker_factory
-
-
+from notifications.rpc.endpoints import Notifications
+import python_http_client
 # def test_conversion_service():
 #     service = worker_factory(ConversionService)
 
@@ -39,17 +37,46 @@ from nameko.testing.services import worker_factory
 class TestMail(TestCase):
 
     def setUp(self):
-        self.body = {
-                "to_email": "tamara.malysheva@saritasa.com",
-                "from_email": "test@example.com",
-                "subject": "blabla",
-                "name": "Tamara",
-                "label": "https://vk.com/studentslifeinsfu"
-                }
+        self.to_email = "tamara.malysheva@saritasa.com"
+        self.from_email = "test@example.com"
+        self.subject = "blabla"
+        self.name = "Shepard"
+        self.label = "https://vk.com/studentslifeinsfu"
+        self.return_value = {"status code": 202}
+        self.sengrid_key = Notifications.sengrid_key
+        self.sg = Notifications.sg
+        self.notifications = Notifications()
+        self.number = '+79994413746'
+        self.content = 'testing'
+        self.return_sms = {"error_code": None}
+        self.fake_number = '+79994413741'
 
-    @patch('Notifications.send_email', return_value={"status code": "202"})
+    # @patch('Notifications.send_email', return_value={"status code": "202"})
     def test_mail(self):
-        self.assertEqual(Notifications.send_email(self.body), {"status code": "202"})
+        self.assertEqual(Notifications.send_email(self.notifications,
+                                                  self.to_email,
+                                                  self.label,
+                                                  self.from_email,
+                                                  self.subject,
+                                                  self.name
+                                                  ), self.return_value)
+        self.assertNotEqual(Notifications.send_email(self.notifications,
+                                                     1,
+                                                     self.label,
+                                                     self.from_email,
+                                                     self.subject,
+                                                     self.name
+                                                     ), self.return_value)
+
+    def test_sms(self):
+        self.assertEqual(Notifications.send_sms(self.notifications,
+                                                self.number, self.content
+                                                ), self.return_sms)
+
+        self.assertNotEqual(Notifications.send_sms(self.notifications,
+                                                   self.fake_number,
+                                                   self.content
+                                                   ), self.return_sms)
 
 
 if __name__ == '__main__':
