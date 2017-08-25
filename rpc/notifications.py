@@ -26,28 +26,21 @@ class Notifications(object):
     sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
 
     @rpc
-    def send_email(self, data):
+    def send_email(self, to_email, label, from_email, subject, name):
         """This method send email to customer with use SenfGrid
 
         Args:
             to_emails (str) : email of customer
             from_emails(str): email of shop
             subject (str): subject of mail
-            body(str): content of the mail
+            name (str): name of customer
+            label (str): link to label of shipping
 
         Return:
             response.code (str): return 202 if email sended
 
         """
-        if not v.validate(data, shcema.schema_body):
-            return False
         try:
-            to_email = data.get("to_email")
-            from_email = data.get("from_email", 'test@example.com')
-            subject = data.get("subject")
-            name = data.get("name")
-            #order_id = data.get("order_id")
-            label = data.get("label")
             from_email = Email(from_email)
             to_email = Email(to_email)
             content = Content(shcema.body_type,
@@ -62,25 +55,24 @@ class Notifications(object):
         return {"status code": response.status_code}
 
     @rpc
-    @rpc
-    def send_sms(self, body):
+    def send_sms(self, number, content):
         """This method send sms to customer
         Args:
             to_phone (str) : number of customer
-            body (str): message to customer
+            content (str): message to customer
             from(str): number of salary (one number in free twillo accaunt)
         Return:
             message.code_error(str): return null if sms send correct
         """
         client = Client(security_settings.accaunt_sid,
                         security_settings.auth_token)
-        if not v.validate(body, shcema.schema_sms):
-            return {"errors": v.errors}
-        to_phone = body.get("to_phone", '+79994413746')
-        content = body.get("content", 'Your Order ready')
+        # if not v.validate(body, shcema.schema_sms):
+        #     return {"errors": v.errors}
+        # to_phone = body.get("to_phone", '+79994413746')
+        # content = body.get("content", 'Your Order ready')
         try:
             message = client.messages.create(
-                    to=to_phone,
+                    to=number,
                     from_=security_settings.twilio_number,
                     body=content
                     )
@@ -90,5 +82,5 @@ class Notifications(object):
                     "message":
                     """Unable to create record: The To number is not a valid
                        phone number"""}
-        self.sms_db.add_sms(to_phone, message.sid, message.status)
+        self.sms_db.add_sms(number, message.sid, message.status)
         return {"error_code": message.error_code, "status": message.status}

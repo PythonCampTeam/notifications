@@ -6,4 +6,4 @@ rpc/__pycache__/*
 .idea
 __pycache__/
 *.pyc
-
+tests/.coverage
