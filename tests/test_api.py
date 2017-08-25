@@ -1,10 +1,10 @@
 import unittest
 import sendgrid
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
-from nameko.testing.services import worker_factory
-from notifications.rpc.endpoints import Notifications
-import python_http_client
+#from unittest.mock import MagicMock, patch
+#from nameko.testing.services import worker_factory
+from rpc.endpoints import Notifications
+#import python_http_client
 # def test_conversion_service():
 #     service = worker_factory(ConversionService)
 

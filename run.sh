@@ -10,4 +10,4 @@ done
 
 # Run the service
 
-nameko run --config /notifications/config/config.yml rpc.notifications
+nameko run --config /notifications/config/config.yml rpc.endpoints
