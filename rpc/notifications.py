@@ -26,27 +26,21 @@ class Notifications(object):
     sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
 
     @rpc
-    def send_email(self, data):
+    def send_email(self, to_email, label, from_email, subject, name):
         """This method send email to customer with use SenfGrid
 
         Args:
             to_emails (str) : email of customer
             from_emails(str): email of shop
             subject (str): subject of mail
-            body(str): content of the mail
+            name (str): name of customer
+            label (str): link to label of shipping
 
         Return:
             response.code (str): return 202 if email sended
 
         """
-        if not v.validate(data, shcema.schema_body):
-            return v.errors
         try:
-            to_email = data.get("to_email")
-            from_email = data.get("from_email", 'test@example.com')
-            subject = data.get("subject")
-            name = data.get("name")
-            label = data.get("label")
             from_email = Email(from_email)
             to_email = Email(to_email)
             content = Content(shcema.body_type,
@@ -65,7 +59,7 @@ class Notifications(object):
         """This method send sms to customer
         Args:
             to_phone (str) : number of customer
-            body (str): message to customer
+            content (str): message to customer
             from(str): number of salary (one number in free twillo accaunt)
         Return:
             message.code_error(str): return null if sms send correct
@@ -76,8 +70,6 @@ class Notifications(object):
         #     return {"errors": v.errors}
         # to_phone = body.get("to_phone", '+79994413746')
         # content = body.get("content", 'Your Order ready')
-        if not isinstance(number, str) or not isinstance(content, str):
-            raise AttributeError("It is not a string!")
         try:
             message = client.messages.create(
                     to=number,

@@ -11,6 +11,7 @@ schema_body = {'to_email': {'type': 'string', 'empty': False,
 schema_sms = {"to_phone": {'type': 'string'},
               "content": {'type': 'string'}}
 
+content = "Your order is ready"
 # @rpc
 # def buy():
 #

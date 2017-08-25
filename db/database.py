@@ -36,9 +36,6 @@ class StoreDB(object):
         self.element = {"number": number, "sid": sid,  "status": status}
         self.db_sms.append(self.element)
 
-    def get_item(self):
-        return self.db.element
-
     def clear_db(self):
         """This method clear cart and items"""
         self.db_sms, self.db_mail = []
