@@ -2,11 +2,11 @@ from nameko.rpc import rpc
 import cerberus
 import sendgrid
 # from notifications.config.settings.common import security as security_settings
-from rpc.shcema import body_mail, body_type
-from config.settings.common import security as security_settings
+from notifications.rpc.shcema import body_mail, body_type
+from notifications.config.settings.common import security as security_settings
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
-from db.database_notification import Store
+from notifications.db.database_notification import Store
 import twilio
 #import python_http_client
 import urllib
@@ -25,7 +25,9 @@ class Notifications(object):
     sms_db = Store()
     name = 'NotificationsRPC'
     sengrid_key = ''.join(security_settings.SENDGRID_API_KEY)
-    sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
+    sendgrid_client = sendgrid.SendGridAPIClient(apikey=sengrid_key)
+    client = Client(security_settings.accaunt_sid,
+                    security_settings.auth_token)
 
     @rpc
     def send_email(self, to_email, label, from_email, subject, name):
@@ -49,12 +51,15 @@ class Notifications(object):
                               body_mail.format(name, label))
             mail = Mail(from_email, subject, to_email, content)
             mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
-            response = self.sg.client.mail.send.post(request_body=mail.get())
+
+            response = self.sendgrid_client.client.mail.send.post(request_body=mail.get())
         except urllib.error.HTTPError as e:
             return {"HTTPError": e.code}
 
-        self.mail_db.add_mail(to_email, response.headers)
-        return {"status code": response.status_code}
+        # self.mail_db.add_mail(to_email, response.headers)
+        #return from_email, to_email, mail, content
+        # return {"status code": "email send"}
+        return {"status": response.status_code}
 
     @rpc
     def send_sms(self, number, content):
@@ -66,14 +71,13 @@ class Notifications(object):
         Return:
             message.code_error(str): return null if sms send correct
         """
-        client = Client(security_settings.accaunt_sid,
-                        security_settings.auth_token)
+
         # if not v.validate(body, shcema.schema_sms):
         #     return {"errors": v.errors}
         # to_phone = body.get("to_phone", '+79994413746')
         # content = body.get("content", 'Your Order ready')
         try:
-            message = client.messages.create(
+            message = self.client.messages.create(
                     to=number,
                     from_=security_settings.twilio_number,
                     body=content
