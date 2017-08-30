@@ -1,6 +1,4 @@
-
-
-class StoreDB(object):
+class Store(object):
     """
         Class for storing data from Notifications.
         It stored date about email and sms.

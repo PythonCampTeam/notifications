@@ -1,11 +1,12 @@
 from nameko.rpc import rpc
 import cerberus
 import sendgrid
-from notifications.config.settings.common import security as security_settings
-from notifications.rpc.shcema import body_mail, body_type
+# from notifications.config.settings.common import security as security_settings
+from rpc.shcema import body_mail, body_type
+from config.settings.common import security as security_settings
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
-from notifications.db.database import StoreDB
+from db.database_notification import Store
 import twilio
 #import python_http_client
 import urllib
@@ -20,8 +21,8 @@ class Notifications(object):
     with use twillo and sendgrid.
 
     """
-    mail_db = StoreDB()
-    sms_db = StoreDB()
+    mail_db = Store()
+    sms_db = Store()
     name = 'NotificationsRPC'
     sengrid_key = ''.join(security_settings.SENDGRID_API_KEY)
     sg = sendgrid.SendGridAPIClient(apikey=sengrid_key)
