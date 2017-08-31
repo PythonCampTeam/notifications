@@ -1,14 +1,12 @@
 from nameko.rpc import rpc
 import cerberus
 import sendgrid
-# from notifications.config.settings.common import security as security_settings
 from notifications.rpc.shcema import body_mail, body_type
 from notifications.config.settings.common import security as security_settings
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
 from notifications.db.database_notification import Store
 import twilio
-#import python_http_client
 import urllib
 
 
@@ -52,13 +50,12 @@ class Notifications(object):
             mail = Mail(from_email, subject, to_email, content)
             mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
 
-            response = self.sendgrid_client.client.mail.send.post(request_body=mail.get())
+            response = self.sendgrid_client.client.mail.send.post(
+                request_body=mail.get())
         except urllib.error.HTTPError as e:
             return {"HTTPError": e.code}
 
-        # self.mail_db.add_mail(to_email, response.headers)
-        #return from_email, to_email, mail, content
-        # return {"status code": "email send"}
+        self.mail_db.add_mail(to_email, response.headers)
         return {"status": response.status_code}
 
     @rpc
@@ -84,9 +81,8 @@ class Notifications(object):
                     )
         except twilio.base.exceptions.TwilioRestException as e:
             return {
-                    "code": "HTTP 400 error",
-                    "message":
-                    """Unable to create record: The To number is not a valid
-                       phone number"""}
-        self.sms_db.add_sms(number, message.sid, message.status)
+                    "code": e.code,
+                    "message": e.msg
+                    }
+        self.sms_db.add_sms(number, message.sid,)
         return {"error_code": message.error_code}

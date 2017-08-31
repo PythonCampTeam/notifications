@@ -1,39 +1,10 @@
 import unittest
-import sendgrid
-import twilio
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
-#from nameko.testing.services import worker_factory
+from unittest.mock import MagicMock
 from notifications.rpc.endpoints import Notifications
-# from sendgrid.helpers.mail import Content, Email, Mail
-#import python_http_client
-# def test_conversion_service():
-#     service = worker_factory(ConversionService)
-
-# def test_send_email_creates_message_with_correct_data():
-#     service = Notifications()
-#     sendgrid_mock = MagicMock()
-#     send_method_mock = MagicMock()
-#     send_method_mock.return_value = ('202')
-#     sendgrid_mock.send = send_method_mock
-#     service.sg = sendgrid_mock
-#
-#     with patch('notifications.rpc.notifications.sendgrid.Mail') as mail_mock:
-#         service.send_email(
-#             to_email="Test Account <test@test.com>",
-#             from_email="sendertest@test.com",
-#             subject="test subject",
-#             body_html="test body html",
-#             body_text="test body text",
-#             )
-#
-#         mail_mock.assert_called_once_with(
-#             to="Test Account <test@test.com>",
-#             subject="test subject",
-#             html="test body html",
-#             text="test body text",
-#             from_email="sendertest@test.com",
-#             )
+from helpers_for_test import Mail, Messages
+import twilio
+# import urllib
 
 
 class TestMail(TestCase):
@@ -51,95 +22,81 @@ class TestMail(TestCase):
         self.content = 'testing'
         self.return_sms = {"error_code": None}
         self.fake_number = '+79994413741'
-
-    # @patch('sendgrid.helpers.mail.Content', return_value='Content')
-    # @patch('sendgrid.helpers.mail.Mail', return_value='Mail')
-    # @patch('sendgrid.helpers.mail.Email', return_value='test_mail')
-    # @patch('sendgrid.SendGridAPIClient', return_value='Client')
-    # # @patch('sendgrid.SendGridAPIClient(apikey=self.sengrid_key).client.mail.send.post(request_body=mail.get())', return_value='Mail_send')
-    # def test_mail(self, Content_mock, Mail_mock, Email_mock, sendgrid_client):
-    #     """Test checks that email will send"""
-    #     # sendgrid.SendGridAPIClient = MagicMock(return_value = '202')
-    #     # sendgrid.SendGridAPIClient.client.mail.send.post = MagicMock(return_value = '202')
-    #     # response = MagicMock(return_value = '202')
-    #     # self.assertEqual(Notifications.send_email(self.notifications,
-    #     #                                           self.to_email,
-    #     #                                           self.label,
-    #     #                                           self.from_email,
-    #     #                                           self.subject,
-    #     #                                           self.name
-    #     #                                           ), self.return_value)
-    #     print(sendgrid.SendGridAPIClient(apikey='fjaskf123h'))
-    #     print(self.notifications.send_email(self.to_email,
-    #                                         self.label,
-    #                                         self.from_email,
-    #                                         self.subject,
-    #                                         self.name))
+        self.url = 'localhost/8000'
+        self.msg = 'HTTP Error'
+        self.code = '101'
+        self.msg = 'Test error message'
+        self.hdrs = 'Test'
+        self.fp = 'Test'
 
     def test_patch(self):
         """Testing send mail to customer with using mock"""
         service = Notifications()
-        sendgrid_mock = MagicMock(return_value='200')
-        send_method_mock = MagicMock()
-        send_method_mock.return_value = (200, 'some message')
-        sendgrid_mock.send = send_method_mock
-        Notifications.sendgrid_client = sendgrid_mock
+        mail = Mail()
+        Notifications.sendgrid_client = MagicMock(return_value='200')
+        # sendgrid.helpers.mail.Mail = MagicMock(
+        #  return_value={'HTTPError': 400})
+        method = Notifications.sendgrid_client
+        method.client.mail.send.post = MagicMock(return_value=mail)
+        self.assertEqual(service.send_email(
+                                self.to_email,
+                                self.label,
+                                self.from_email,
+                                self.subject,
+                                self.name,
+                                    ), {'status': '200'})
 
-        with patch('sendgrid.helpers.mail.Mail') as mail_mock:
-                    service.send_email(
-                                       self.to_email,
-                                       self.label,
-                                       self.from_email,
-                                       self.subject,
-                                       self.name,
-                                    )
-                    #mail_mock.assert_not_called()
-
-
-    #@patch('send_email.response', return_value={"status code": "202"})
-    # def test_mail_error(self):
-    #     """Test checks error if send empty email of customer"""
-    #     sendgrid.SendGridAPIClient = MagicMock(return_value = '202')
-    #     client.mail.send.post = MagicMock(return_value = '202')
-    #     self.assertNotEqual(Notifications.send_email(self.notifications,
-    #                                                  1,
-    #                                                  self.label,
-    #                                                  self.from_email,
-    #                                                  self.subject,
-    #                                                  self.name
-    #                                                  ), self.return_value)
-
-    # def test_mail_error(self):
-    #     """Test checks error if send empty email of customer"""
-    #
-    #     self.assertNotEqual(Notifications.send_email(self.notifications,
-    #                                                 1,
-    #                                                 self.label,
-    #                                                 self.from_email,
-    #                                                 self.subject,
-    #                                                 self.name
-    #                                                 ), self.return_value)
+    # def test_exc_mail(self):
+    #     service = Notifications()
+    #     Notifications.sendgrid_client = MagicMock()
+    #     method = Notifications.sendgrid_client
+    #     side_effect = urllib.error.HTTPError(url=self.url,
+    #                                          code=self.code,
+    #                                          msg=self.msg,
+    #                                          hdrs=self.hdrs,
+    #                                          fp=self.fp)
+    #     method.client.mail.send.post = MagicMock(side_effect=side_effect)
+    #     print(service.send_email(
+    #                             self.to_email,
+    #                             self.label,
+    #                             self.from_email,
+    #                             self.subject,
+    #                             self.name))
 
     def test_sms(self):
         """Test checks sms sending"""
         service = Notifications()
-        twilio_mock = MagicMock()
-        send_method_mock = MagicMock()
-        send_method_mock.return_value = (200, 'some message')
-        twilio_mock.send = send_method_mock
-        Notifications.client = twilio_mock
-        twilio.rest.Client = MagicMock()
-        twilio.rest.Client.messages.create = MagicMock(return_value=self.return_sms)
-        with patch('twilio.rest.Client') as sms_mock:
-            self.assertNotEqual(service.send_sms(
-                                                self.number, self.content
-                                                ), self.return_sms)
+        message = Messages()
+        service.sms_db.add_sms = MagicMock(return_value='added')
+        # Notifications.client = MagicMock(return_value='200')
+        # response = {"sid": "14224", "status": "OK", "error_code": "Null"}
+        service.client.messages.create = MagicMock(return_value=message)
+        # twilio.rest.Client = MagicMock(return_value=self.return_sms)
+        print(service.send_sms(self.number, self.content))
+        self.assertNotEqual(service.send_sms(
+                                            self.number,
+                                            self.content
+                                            ), self.return_sms)
 
-            self.assertNotEqual(service.send_sms(
-                                                   self.fake_number,
-                                                   self.content
-                                                   ), self.return_sms)
+        self.assertNotEqual(service.send_sms(
+                                            self.fake_number,
+                                            self.content
 
+                                            ), self.return_sms)
+
+    def test_sms_exs(self):
+        """Test checks sms exseption"""
+        status = 'sdsd'
+        uri = 'nfjshr7t7g/bbf/3'
+        side_effect = twilio.base.exceptions.TwilioRestException(
+            code=self.code,
+            status=status,
+            msg=self.msg,
+            uri=uri)
+        service = Notifications()
+        service.sms_db.add_sms = MagicMock(return_value='added')
+        service.client.messages.create = MagicMock(side_effect=side_effect)
+        print(service.send_sms('4454545', self.content))
 
 
 if __name__ == '__main__':

@@ -1,10 +1,6 @@
 import unittest
-import sendgrid
 from unittest import TestCase
-#from unittest.mock import MagicMock, patch
-#from nameko.testing.services import worker_factory
 from rpc.endpoints import Notifications
-#import python_http_client
 # def test_conversion_service():
 #     service = worker_factory(ConversionService)
 
@@ -32,9 +28,10 @@ from rpc.endpoints import Notifications
 #             text="test body text",
 #             from_email="sendertest@test.com",
 #             )
-#
-#
+
+
 class TestMail(TestCase):
+    """Tests without Mock"""
 
     def setUp(self):
         self.to_email = "tamara.malysheva@saritasa.com"
@@ -70,9 +67,9 @@ class TestMail(TestCase):
 
     def test_sms(self):
         print(Notifications.send_sms(self.notifications,
-                                                self.number, self.content
-                                                ),
-                                                self.return_sms)
+                                     self.number,
+                                     self.content
+                                     ), self.return_sms)
         self.assertEqual(Notifications.send_sms(self.notifications,
                                                 self.number, self.content
                                                 ), self.return_sms)
