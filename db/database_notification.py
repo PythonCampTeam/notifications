@@ -24,22 +24,24 @@ class Store(object):
         self.element = {"email": mail, "date": data}
         self.db_mail.append(self.element)
 
-    def add_sms(self, number, sid, status):
+    def add_sms(self, number, sid):
         """Adde new information about sms
         Args:
             number(str): number of customer
             date(str): information about sms notification
 
         """
-        self.element = {"number": number, "sid": sid,  "status": status}
+        self.element = {"number": number, "sid": sid}
         self.db_sms.append(self.element)
 
     def clear_db(self):
         """This method clear cart and items"""
-        self.db_sms, self.db_mail = []
+        self.db_sms, self.db_mail = [], []
 
     def get_mail(self):
+        """Return mail db"""
         return self.db_mail
 
     def get_sms(self):
+        """Return mail sms"""
         return self.db_sms
