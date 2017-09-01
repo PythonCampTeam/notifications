@@ -1,14 +1,15 @@
-from nameko.rpc import rpc
-import cerberus
-import sendgrid
-from notifications.rpc.shcema import body_mail, body_type
-from notifications.config.settings.common import security as security_settings
-from sendgrid.helpers.mail import Content, Email, Mail
-from twilio.rest import Client
-from notifications.db.database_notification import Store
-import twilio
 import urllib
 
+import cerberus
+import sendgrid
+import twilio
+from nameko.rpc import rpc
+from sendgrid.helpers.mail import Content, Email, Mail
+from twilio.rest import Client
+
+from notifications.config.settings.common import security as security_settings
+from notifications.db.database_notification import Store
+from notifications.rpc.shcema import body_mail, body_type
 
 Validator = cerberus.Validator
 v = Validator()
@@ -79,5 +80,5 @@ class Notifications(object):
                     "code": e.code,
                     "message": e.msg
                     }
-        self.sms_db.add_sms(number, message.sid,)
+        self.sms_db.add_sms(number, message.sid)
         return {"error_code": message.error_code}
