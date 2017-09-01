@@ -68,11 +68,6 @@ class Notifications(object):
         Return:
             message.code_error(str): return null if sms send correct
         """
-
-        # if not v.validate(body, shcema.schema_sms):
-        #     return {"errors": v.errors}
-        # to_phone = body.get("to_phone", '+79994413746')
-        # content = body.get("content", 'Your Order ready')
         try:
             message = self.client.messages.create(
                     to=number,
