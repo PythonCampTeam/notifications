@@ -21,7 +21,7 @@ services:
         - RABBIT_PORT=5672
         - RABBIT_MANAGEMENT_PORT=15672
         - SETTINGS_MODULE=notifications
-        - PYTHONPATH=${PYTHONPATH}:/notifications
+        - PYTHONPATH=${PYTHONPATH}:/
 networks:
   gateway_backend:
     external: true
