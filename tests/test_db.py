@@ -1,5 +1,6 @@
 import unittest
 from unittest import TestCase
+
 from notifications.db.database_notification import Store
 
 

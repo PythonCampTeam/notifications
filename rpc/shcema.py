@@ -12,18 +12,3 @@ schema_sms = {"to_phone": {'type': 'string'},
               "content": {'type': 'string'}}
 
 content = "Your order is ready"
-# @rpc
-# def buy():
-#
-#     client = Client(accaunt_sid, auth_token)
-#
-#     client.messages.create(
-#         to='+79994413746',
-#         from_='+16195866444',
-#         body='Na potolke nosok!'
-#         )
-#
-# {
-#     "to_phone": "+79994413746",
-#     "content": "OK"
-# }
