@@ -6,7 +6,7 @@ WORKDIR /notifications
 
 RUN chmod +x /notifications/run.sh
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils\
   netcat
 
 RUN /bin/bash -c "pip3 install -r /notifications/requirements/base.txt"
