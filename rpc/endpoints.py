@@ -67,7 +67,7 @@ class Notifications(object):
 
         """
         try:
-            from_email = Email(self.from_email)
+            from_email = Email(self.address_from)
             to_email = Email(to_email)
             content = Content(body_type,
                               body_mail.format(name, label))
@@ -94,18 +94,21 @@ class Notifications(object):
         Return:
             response.code (str): return 202 if email sended
         """
-        address_from = Email(self.address_from)
-        to_email = Email(address_to)
-        content = email_content(name=name, label=label, order=order)
-        mail = Mail(address_from,
-                    self.subject,
-                    to_email,
-                    content
-                    )
+        try:
+            address_from = Email(self.address_from)
+            to_email = Email(address_to)
+            content = email_content(name=name, label=label, order=order)
+            mail = Mail(address_from,
+                        self.subject,
+                        to_email,
+                        content
+                        )
 
-        response = self.sendgrid_client.client.mail.send.post(
-            request_body=mail.get())
-        self.mail_db.add_mail(to_email, response.headers)
+            response = self.sendgrid_client.client.mail.send.post(
+                    request_body=mail.get())
+            self.mail_db.add_mail(to_email, response.headers)
+        except urllib.error.HTTPError as e:
+            return {"HTTPError": e.code}
 
         return {"status": response.status_code}
 
