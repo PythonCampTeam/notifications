@@ -6,10 +6,11 @@ import twilio
 from nameko.rpc import rpc
 from sendgrid.helpers.mail import Content, Email, Mail
 from twilio.rest import Client
-from jinja2 import Environment, PackageLoader
+# from jinja2 import Environment, PackageLoader
 from notifications.config.settings.common import security as security_settings
 from notifications.db.database_notification import Store
 from notifications.rpc.shcema import body_mail, body_type
+from notifications.rpc.content import email_content
 
 Validator = cerberus.Validator
 v = Validator()
@@ -20,8 +21,6 @@ class Notifications(object):
     with use twillo and sendgrid.
 
         Args:
-            ENV : Environment for loader template.
-            template (html): Template for label.
             name (stirng): Name of service
 
         Attributes:
@@ -36,12 +35,6 @@ class Notifications(object):
             subject (str): Subject of mail.
 
     """
-    ENV = Environment(loader=PackageLoader(
-                                    'notifications.config',
-                                    'templates'
-                                          )
-                      )
-    template = ENV.get_template('email_template.html')
     name = 'NotificationsRPC'
 
     def __init__(self):
@@ -89,21 +82,8 @@ class Notifications(object):
         self.mail_db.add_mail(to_email, response.headers)
         return {"status": response.status_code}
 
-    def email_content(self, name, label=None, order=None):
-
-        context = {
-                    'name': name,
-                    'label': label,
-                    'order_id': order.id,
-                    'order_items': order['items']
-                   }
-        content = self.template.render(context)
-
-        content = Content('text/html', content)
-        return content
-
     @rpc
-    def send_email_with_temp(self, address_to, name, order, label=None, ):
+    def send_email_with_temp(self, address_to, name, label, order):
         """This method send email to customer with template.
 
         Args:
@@ -116,13 +96,11 @@ class Notifications(object):
         """
         address_from = Email(self.address_from)
         to_email = Email(address_to)
+        content = email_content(name=name, label=label, order=order)
         mail = Mail(address_from,
                     self.subject,
                     to_email,
-                    self.email_content(name,
-                                       label,
-                                       order
-                                       )
+                    content
                     )
 
         response = self.sendgrid_client.client.mail.send.post(
