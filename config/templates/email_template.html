@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>{{name}}, you paid order, contain label </h3>
+    <h4>Order # {{order_id}}</h4>
+    <a href="{{label}}">Label</a>
+    <table>
+        {% for item in order_items %}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td>{{item['description']}}</td>
+             <td>{{item['amount']}}</td>
+             <td>{{item['quantity']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
