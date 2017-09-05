@@ -89,30 +89,6 @@ class Notifications(object):
         self.mail_db.add_mail(to_email, response.headers)
         return {"status": response.status_code}
 
-    @rpc
-    def send_sms(self, number, content="Your Order Ready"):
-        """This method send sms to customer
-        Args:
-            to_phone (str) : number of customer
-            content (str): message to customer
-            from(str): number of salary (one number in free twillo accaunt)
-        Return:
-            message.code_error(str): return null if sms send correct
-        """
-        try:
-            message = self.client_twilio.messages.create(
-                    to=number,
-                    from_=security_settings.twilio_number,
-                    body=content
-                    )
-        except twilio.base.exceptions.TwilioRestException as e:
-            return {
-                    "code": e.code,
-                    "message": e.msg
-                    }
-        self.sms_db.add_sms(number, message.sid)
-        return {"error_code": message.error_code}
-
     def email_content(self, name, label=None, order=None):
 
         context = {
@@ -155,43 +131,26 @@ class Notifications(object):
 
         return {"status": response.status_code}
 
-
-# class SendMail(Notifications):
-#     ENV = Environment(loader=PackageLoader(
-#                                     'notifications.config',
-#                                     'templates'
-#                                           )
-#                       )
-#     key = ''.join(security_settings.SENDGRID_API_KEY)
-#     template = ENV.get_template('email_template.html')
-#
-#     def __init__(self, *args, **kwargs):
-#         super(Notifications, self).__init__(*args, **kwargs)
-#
-#     def email_content(self, address_to, label=None, order=None):
-#
-#         context = {'label': label,
-#                    'order_id': order.id,
-#                    'order_items': order['items']
-#                    }
-#         content = self.template.render(context)
-#         print(content)
-#         content = Content('text/html', content)
-#         print(content)
-#         return content
-#
-#     @rpc
-#     def email_send(self, address_to, label=None, order=None):
-#         address_from = Mail(self.address_from)
-#         mail = Mail(address_from,
-#                     'test', self.address_to,
-#                     self.email_content(address_to,
-#                                        label,
-#                                        order
-#                                        )
-#                     )
-#         print(self.key)
-#         response = self.mail_client.client.mail.send.post(
-#             request_body=mail.get())
-
-        return response
+    @rpc
+    def send_sms(self, number, content="Your Order Ready"):
+        """This method send sms to customer
+        Args:
+            to_phone (str) : number of customer
+            content (str): message to customer
+            from(str): number of salary (one number in free twillo accaunt)
+        Return:
+            message.code_error(str): return null if sms send correct
+        """
+        try:
+            message = self.client_twilio.messages.create(
+                    to=number,
+                    from_=security_settings.twilio_number,
+                    body=content
+                    )
+        except twilio.base.exceptions.TwilioRestException as e:
+            return {
+                    "code": e.code,
+                    "message": e.msg
+                    }
+        self.sms_db.add_sms(number, message.sid)
+        return {"error_code": message.error_code}
