@@ -22,7 +22,7 @@ def email_content(name, label=None, order=None):
                 'name': name,
                 'label': label,
                 'order_id': order.get('id'),
-                'order_items': order['items']
+                'order_items': order.get('items')
                }
     content = template.render(context)
 
