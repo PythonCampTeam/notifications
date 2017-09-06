@@ -22,8 +22,8 @@ def email_content(name, label=None, order=None):
         context = {
                     'name': name,
                     'label': label,
-                    'order_id': order.id,
-                    'order_items': order['items']
+                    'order_id': order.get('id'),
+                    'order_items': order.get('items')
                    }
         content = template.render(context)
 

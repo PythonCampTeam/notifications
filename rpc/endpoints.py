@@ -69,21 +69,24 @@ class Notifications(object):
         try:
             from_email = Email(self.address_from)
             to_email = Email(to_email)
-            content = Content(body_type,
-                              body_mail.format(name, label))
+            content = Content(
+                body_type,
+                body_mail.format(name, label)
+            )
             mail = Mail(from_email, self.subject, to_email, content)
             mail.template_id = security_settings.TEMPLATE_ID['PythonCamp']
 
             response = self.sendgrid_client.client.mail.send.post(
-                request_body=mail.get())
+                request_body=mail.get()
+            )
         except urllib.error.HTTPError as e:
             return {"HTTPError": e.code}
 
         self.mail_db.add_mail(to_email, response.headers)
-        return {"status": response.status_code}
+        return response.status_code
 
     @rpc
-    def send_email_with_temp(self, address_to, name, label, order):
+    def send_email_with_temp(self, address_to, label, name, order):
         """This method send email to customer with template.
 
         Args:
@@ -98,19 +101,21 @@ class Notifications(object):
             address_from = Email(self.address_from)
             to_email = Email(address_to)
             content = email_content(name=name, label=label, order=order)
-            mail = Mail(address_from,
-                        self.subject,
-                        to_email,
-                        content
+            mail = Mail(
+                      address_from,
+                      self.subject,
+                      to_email,
+                      content
                         )
 
             response = self.sendgrid_client.client.mail.send.post(
-                    request_body=mail.get())
+                    request_body=mail.get()
+                    )
             self.mail_db.add_mail(to_email, response.headers)
         except urllib.error.HTTPError as e:
             return {"HTTPError": e.code}
 
-        return {"status": response.status_code}
+        return response.status_code
 
     @rpc
     def send_sms(self, number, content="Your Order Ready"):
@@ -127,11 +132,11 @@ class Notifications(object):
                     to=number,
                     from_=security_settings.twilio_number,
                     body=content
-                    )
+                )
         except twilio.base.exceptions.TwilioRestException as e:
             return {
                     "code": e.code,
                     "message": e.msg
                     }
         self.sms_db.add_sms(number, message.sid)
-        return {"error_code": message.error_code}
+        return message.error_code
