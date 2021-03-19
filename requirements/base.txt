@@ -28,4 +28,4 @@ sendgrid==5.0.0
 twilio==6.5.1
 Cerberus==1.1
 MarkupSafe==1.0
-jinja2==2.9.6
+jinja2==2.11.3
